@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from environs import Env
+
+#start env variables 
+env=Env()
+env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -55,7 +60,7 @@ ROOT_URLCONF = 'banking.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,13 +79,21 @@ WSGI_APPLICATION = 'banking.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    'locales': {
         'ENGINE':'django.db.backends.postgresql',
-        'NAME':'banking',
-        'USER':'postgres',
-        'PASSWORD':'1080040202',
-        'HOST':'localhost',
-        'PORT':'5432',
+        'NAME':env('DB_NAME'),
+        'USER':env('DB_USER'),
+        'PASSWORD':env('DB_PASSWORD'),
+        'HOST':env('DB_HOST', default = 'localhost'),
+        'PORT':env('DB_PORT'),
+    },
+    'default':{
+ 'ENGINE':'django.db.backends.postgresql',
+        'NAME':env('DB_NAMES'),
+        'USER':env('DB_USERS'),
+        'PASSWORD':env('DB_PASSWORDS'),
+        'HOST':env('DB_HOSTS'),
+        'PORT':env('DB_PORTS'),
     },
 'local':{ 
         'ENGINE': 'django.db.backends.sqlite3',
@@ -124,6 +137,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']  # carpeta para css/js 
+STATIC_ROOT = BASE_DIR / 'staticfiles'    # para collectstatic en producción 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
